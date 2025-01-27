@@ -1,8 +1,9 @@
 import {prisma} from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
+import { NextAuthOptions } from "next-auth";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     providers: [
       CredentialsProvider({
           name: 'Credentials',
@@ -26,7 +27,7 @@ export const authOptions = {
                     return {
                         id: existingUser.id.toString(),
                         name: existingUser.name,
-                        email: existingUser.number
+                        email: existingUser.email
                     }
                 }
                 return null;
@@ -44,7 +45,7 @@ export const authOptions = {
                 return {
                     id: user.id.toString(),
                     name: user.name,
-                    email: user.number
+                    email: user.email
                 }
             } catch(e) {
                 console.error(e);
@@ -58,9 +59,10 @@ export const authOptions = {
     callbacks: {
         // TODO: can u fix the type here? Using any is bad
         async session({ token, session }: any) {
-            session.user.id = token.sub
-
-            return session
+            if (token && token.sub) {
+                session.user.id = token.sub;
+            }
+            return session;
         }
     }
   }
