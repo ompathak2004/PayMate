@@ -21,7 +21,10 @@ export async function createOnrampTransaction(provider: string, amount:number){
             startTime :new Date(),
             token,
             transactionType : "Deposit",
-            userId : session.user.id
+            userId : parseInt(session.user.id)
         }
     })
+    return {
+        message:"Done"
+    }
 }
